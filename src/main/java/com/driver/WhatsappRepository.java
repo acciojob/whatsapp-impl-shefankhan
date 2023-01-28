@@ -37,12 +37,10 @@ public class WhatsappRepository {
         }
      }
     public Group createGroup(List<User> users){
-        if (users==null || users.size()<2){
-            throw new IllegalArgumentException("group must have 2 or more user");
-        }
-        User admin=users.get(0);
 
-        if(users.size()==2){
+       // User admin=users.get(0);
+
+        /*if(users.size()==2){
             User otherUser= users.get(1);
              Group personalChat=new Group(otherUser.getName(), users.size());
              adminMap.put(personalChat,admin);
@@ -54,14 +52,28 @@ public class WhatsappRepository {
             adminMap.put(group,admin);
             groupUserMap.put(group,users);
             return group;
+        }*/
+        if(users.size()>2){
+            customGroupCount++;
+            Group group = new Group("Group "+customGroupCount, users.size());
+            groupUserMap.put(group, users);
+            adminMap.put(group, users.get(0));
+            groupMessageMap.put(group, new ArrayList<Message>());
+            return group;
         }
+        Group group = new Group(users.get(1).getName(), users.size());
+        groupUserMap.put(group, users);
+        adminMap.put(group, users.get(0));
+        groupMessageMap.put(group, new ArrayList<Message>());
+        return group;
+
 
 
 
     }
     public int createMessage(String content){
-
-        Message message=new Message(++messageId,content);
+        messageId++;
+        Message message=new Message(messageId,content);
         return messageId;
     }
 
@@ -74,11 +86,12 @@ public class WhatsappRepository {
         if(!groupUserMap.get(group).contains(sender)){
             throw new Exception("You are not allowed to send message");
         }
+        senderMap.put(message,sender);
         List<Message> messages= groupMessageMap.get(group);
 
         messages.add(message);
         groupMessageMap.put(group,messages);
-        senderMap.put(message,sender);
+
         return  messages.size();
 
 
@@ -90,7 +103,7 @@ public class WhatsappRepository {
         if(!approver.equals(adminMap.get(group))){
             throw new Exception("Approver does not have rights");
         }
-        if(groupUserMap.get(group).contains(user)){
+        if(!groupUserMap.get(group).contains(user)){
             throw new Exception("User is not a participant");
         }
         adminMap.put(group,user);
