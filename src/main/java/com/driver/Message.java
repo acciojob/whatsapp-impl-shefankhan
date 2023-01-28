@@ -8,9 +8,7 @@ import java.util.Date;
 public class Message {
     private int id;
 
-    public Message(String content) {
-        this.content = content;
-    }
+
 
     private String content;
     private Date timestamp;
@@ -33,13 +31,14 @@ public class Message {
     }
 
     public Date getTimestamp() {
-        Date timestamp = Calendar.getInstance().getTime();
+        // Date timestamp = Calendar.getInstance().getTime();
         return timestamp;
     }
 
     public Message(int id, String content) {
         this.id = id;
         this.content = content;
+        this.timestamp=new Date();
     }
 
     public void setTimestamp(Date timestamp) {
